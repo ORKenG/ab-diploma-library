@@ -58,14 +58,13 @@ Pellentesque dignissim tincidunt sem, at sollicitudin sem porttitor sit amet. Qu
 
 Vivamus quis felis vitae eros vulputate aliquet nec eget justo. Aliquam sodales orci nunc, sed interdum ex viverra vitae. Cras erat felis, congue vel mattis sed, facilisis ut nunc. Curabitur ornare malesuada turpis a facilisis. Mauris egestas nisl ligula, ut facilisis felis cursus eget. Sed vitae sollicitudin neque, in convallis libero. Donec egestas arcu vel felis elementum, id auctor leo lacinia. Fusce arcu ligula, tristique non lectus sit amet, lobortis fermentum nunc. Etiam nulla tellus, pharetra et ipsum lacinia, blandit gravida nunc. Donec feugiat at turpis sed sagittis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam porttitor metus quis facilisis suscipit.
 
-        <p class="ab-haze-test2">Test</p>
-        <p class="ab-haze-test2">Test2</p>
-        <p class="ab-haze-test2">Test3</p>
+        <p class="ab-haze-test2" data-test-case-id="secondText">Test</p>
+        <p class="ab-haze-test2" data-test-case-id="secondText2">Test2</p>
+        <p class="ab-haze-test2" data-test-case-id="secondText3">Test3</p>
         <script type="text/javascript">
             var abHaze = new abHaze();
-            abHaze.setAB('.ab-haze-test', true, ['click']);
-            abHaze.setAB('.ab-haze-test2', false, ['click']);
-            abHaze.setAB('.ab-haze-test3', true, ['click']);
+            abHaze.setAB('.ab-haze-test', true, ['click', 'mouseover']);
+            abHaze.setAB('.ab-haze-test2', true, ['click']);
         </script>
     </body>
 </html>

@@ -2,7 +2,20 @@
 
 class ABHaze {
     constructor() {
-        window.abDataLayer = [];
+        const REQUEST_URL = null;
+        window.abDataLayer = {
+            eventsHistory: [],
+            eventAnalytics: []
+        };
+        window.onbeforeunload = () => {
+            if (REQUEST_URL) {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = () => console.dir('Collected AB Data');
+
+                xmlhttp.open('GET', REQUEST_URL, true);
+                xmlhttp.send();
+            }
+        };
     }
     setAB(selector, saveCookie, eventArray) {
         try {
@@ -52,26 +65,49 @@ class ABHaze {
         const viewEventType = 'view';
         let viewEventListener = () => {
             if (this.elementInViewport(item)) {
-                window.abDataLayer.push({
+                window.abDataLayer.eventsHistory.push({
                     viewEventType,
                     selector,
                     testCaseId
                 });
                 window.removeEventListener('load', viewEventListener);
                 window.removeEventListener('scroll', viewEventListener);
+                this.updateEventAnalytics(selector, 'view');
             }
         };
         window.addEventListener('load', viewEventListener);
         window.addEventListener('scroll', viewEventListener);
+        const eventAnalyticsObject = {
+            selector,
+            testCaseId,
+            view: false
+        };
+        if (eventArray.includes('click')) {
+            eventAnalyticsObject.click = false;
+        }
+        if (eventArray.includes('mouseover')) {
+            eventAnalyticsObject.mouseover = false;
+        }
+        window.abDataLayer.eventAnalytics.push(eventAnalyticsObject);
         eventArray.forEach((eventType) => {
-            let eventListener = () => {
-                window.abDataLayer.push({
-                    eventType,
-                    selector,
-                    testCaseId
-                });
+            let eventListener = (e) => {
+                if (e.target.classList.contains(selector.replace(/\./g, ''))) {
+                    window.abDataLayer.eventsHistory.push({
+                        eventType,
+                        selector,
+                        testCaseId
+                    });
+                    this.updateEventAnalytics(selector, eventType);
+                }
             };
             window.addEventListener(eventType, eventListener);
+        });
+    }
+    updateEventAnalytics(selector, eventType) {
+        window.abDataLayer.eventAnalytics.forEach((event) => {
+            if (event.selector === selector) {
+                event[eventType] = true;
+            }
         });
     }
     elementInViewport(el) {
