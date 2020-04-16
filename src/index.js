@@ -1,7 +1,7 @@
 'use strict';
 
 class ABHaze {
-    constructor(siteID, siteSecret, mode) {
+    constructor(siteID, siteSecret, mode, customSessionUserId) {
         const REQUEST_URL = siteID
             ? mode === 'PRODUCTION'
                 ? `https://diploma-ab.herokuapp.com/api/containers/save?siteID=${siteID}`
@@ -16,7 +16,7 @@ class ABHaze {
             if (REQUEST_URL) {
                 console.dir(`Request URL = ${REQUEST_URL}`);
                 if (!this.readCookie('ABUserSessionId')) {
-                    const userSessionId = Date.now() + Math.random().toString(36).substring(7);
+                    const userSessionId = customSessionUserId || Date.now() + Math.random().toString(36).substring(7);
                     document.cookie = `ABUserSessionId=${userSessionId}`;
                 }
                 window.abDataLayer.userSessionId = this.readCookie('ABUserSessionId');
@@ -31,15 +31,21 @@ class ABHaze {
             }
         };
     }
-    setAB(selector, saveCookie, eventArray) {
+    setAB(selector, saveCookie) {
+        const eventArray = ['click', 'mouseover'];
         try {
             var containerObj = document.querySelectorAll(selector);
             if (containerObj && containerObj.length) {
-                window.abDataLayer.containersArray.push(selector);
+                let containerInfoObj = {
+                    selector
+                };
                 let cookieValue = this.readCookie(`ABHaze_${selector}`);
                 let selectedIndex = !cookieValue ? Math.floor(Math.random() * containerObj.length) : parseInt(cookieValue);
                 containerObj.forEach((item, index) => {
                     if (item.dataset.testCaseId) {
+                        if (!containerInfoObj.containerDescription && item.dataset.containerDescription) {
+                            containerInfoObj.containerDescription = item.dataset.containerDescription;
+                        }
                         if (index !== selectedIndex) {
                             item.remove();
                         } else {
@@ -53,6 +59,7 @@ class ABHaze {
                 if (saveCookie && !cookieValue) {
                     this.saveCookie(selector, selectedIndex);
                 }
+                window.abDataLayer.containersArray.push(containerInfoObj);
             }
         } catch (e) {
             console.dir(e);

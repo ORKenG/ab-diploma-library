@@ -4,7 +4,7 @@
         <script type="text/javascript" src="build/ab-haze.js"></script>
     </head>
     <body>
-        <p class="ab-haze-test" data-test-case-id="firstText"> I am a text</p>
+        <p class="ab-haze-test" data-test-case-id="firstText" data-container-description="test description"> I am a text</p>
         <p class="ab-haze-test" data-test-case-id="firstText2"> I am a text2</p>
         <p class="ab-haze-test" data-test-case-id="firstText3"> I am a text3</p>
 
@@ -62,9 +62,9 @@ Vivamus quis felis vitae eros vulputate aliquet nec eget justo. Aliquam sodales 
         <p class="ab-haze-test2" data-test-case-id="secondText2">Test2</p>
         <p class="ab-haze-test2" data-test-case-id="secondText3">Test3</p>
         <script type="text/javascript">
-            var abHaze = new abHaze('FbewwCgv2Sc6iIi7', 'irNMltqbSjt6Ooh8URPmRv4hJCXbO7FJ', 'DEVELOPMENT');
-            abHaze.setAB('.ab-haze-test', true, ['click', 'mouseover']);
-            abHaze.setAB('.ab-haze-test2', true, ['click']);
+            var abHaze = new abHaze('FbewwCgv2Sc6iIi7', 'irNMltqbSjt6Ooh8URPmRv4hJCXbO7FJ', 'DEVELOPMENT', null);
+            abHaze.setAB('.ab-haze-test', true);
+            abHaze.setAB('.ab-haze-test2', true);
         </script>
     </body>
 </html>
