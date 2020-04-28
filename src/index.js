@@ -20,6 +20,7 @@ class ABHaze {
                     document.cookie = `ABUserSessionId=${userSessionId}`;
                 }
                 window.abDataLayer.userSessionId = this.readCookie('ABUserSessionId');
+                window.abDataLayer.sessionId = Date.now() + Math.random().toString(36).substring(7);
                 window.abDataLayer.userDevice = this.deviceDetection();
                 window.abDataLayer.userClient = navigator.userAgent;
                 window.abDataLayer.siteSecret = siteSecret;
