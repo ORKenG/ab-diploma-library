@@ -33,7 +33,7 @@ class ABHaze {
         };
     }
     setAB(selector, saveCookie) {
-        const eventArray = ['click', 'mouseover'];
+        const eventArray = ['click', 'mouseenter'];
         try {
             var containerObj = document.querySelectorAll(selector);
             if (containerObj && containerObj.length) {
@@ -108,25 +108,29 @@ class ABHaze {
         if (eventArray.includes('click')) {
             eventAnalyticsObject.click = false;
         }
-        if (eventArray.includes('mouseover')) {
+        if (eventArray.includes('mouseenter')) {
             eventAnalyticsObject.mouseover = false;
         }
         window.abDataLayer.eventAnalytics.push(eventAnalyticsObject);
         eventArray.forEach((eventType) => {
-            let eventListener = (e) => {
-                if (e.target.classList.contains(selector.replace(/\./g, ''))) {
-                    window.abDataLayer.eventsHistory.push({
-                        eventType,
-                        selector,
-                        testCaseId
-                    });
-                    this.updateEventAnalytics(selector, eventType);
-                }
+            let eventListener = () => {
+                window.abDataLayer.eventsHistory.push({
+                    eventType,
+                    selector,
+                    testCaseId
+                });
+                this.updateEventAnalytics(selector, eventType);
             };
-            window.addEventListener(eventType, eventListener);
+            const targetElementCollection = document.getElementsByClassName(selector.substr(1));
+            if (targetElementCollection.length) {
+                targetElementCollection[0].addEventListener(eventType, eventListener);
+            }
         });
     }
     updateEventAnalytics(selector, eventType) {
+        if (eventType === 'mouseenter') {
+            eventType = 'mouseover';
+        }
         window.abDataLayer.eventAnalytics.forEach((event) => {
             if (event.selector === selector) {
                 event[eventType] = true;
@@ -134,23 +138,16 @@ class ABHaze {
         });
     }
     elementInViewport(el) {
-        var top = el.offsetTop;
-        var left = el.offsetLeft;
-        var width = el.offsetWidth;
-        var height = el.offsetHeight;
+        const rect = el.getBoundingClientRect();
+        // DOMRect { x: 8, y: 8, width: 100, height: 100, top: 8, right: 108, bottom: 108, left: 8 }
+        const windowHeight = (window.innerHeight || document.documentElement.clientHeight);
+        const windowWidth = (window.innerWidth || document.documentElement.clientWidth);
 
-        while (el.offsetParent) {
-            el = el.offsetParent;
-            top += el.offsetTop;
-            left += el.offsetLeft;
-        }
+        // http://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
+        const vertInView = (rect.top <= windowHeight) && ((rect.top + rect.height) >= 0);
+        const horInView = (rect.left <= windowWidth) && ((rect.left + rect.width) >= 0);
 
-        return (
-            top < (window.pageYOffset + window.innerHeight) &&
-            left < (window.pageXOffset + window.innerWidth) &&
-            (top + height) > window.pageYOffset &&
-            (left + width) > window.pageXOffset
-        );
+        return (vertInView && horInView);
     }
     deviceDetection() {
         // device detection
