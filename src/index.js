@@ -32,7 +32,10 @@ class ABHaze {
             }
         };
     }
-    setAB(selector, saveCookie) {
+    setAB(selector, targetSelector, saveCookie) {
+        if (!targetSelector) {
+            targetSelector = selector;
+        }
         const eventArray = ['click', 'mouseenter'];
         try {
             var containerObj = document.querySelectorAll(selector);
@@ -50,7 +53,7 @@ class ABHaze {
                         if (index !== selectedIndex) {
                             item.remove();
                         } else {
-                            this.setABListener(item, selector, eventArray, item.dataset.testCaseId);
+                            this.setABListener(item, targetSelector, eventArray, item.dataset.testCaseId);
                         }
                     } else {
                         throw new Error(`Initialization error for ${selector}`);
