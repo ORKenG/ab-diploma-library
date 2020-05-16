@@ -41,19 +41,20 @@ class ABHaze {
             var containerObj = document.querySelectorAll(selector);
             if (containerObj && containerObj.length) {
                 let containerInfoObj = {
-                    selector
+                    selector,
+                    targetSelector
                 };
                 let cookieValue = this.readCookie(`ABHaze_${selector}`);
                 let selectedIndex = !cookieValue ? Math.floor(Math.random() * containerObj.length) : parseInt(cookieValue);
                 containerObj.forEach((item, index) => {
                     if (item.dataset.testCaseId) {
-                        if (!containerInfoObj.containerDescription && item.dataset.containerDescription) {
-                            containerInfoObj.containerDescription = item.dataset.containerDescription;
-                        }
                         if (index !== selectedIndex) {
                             item.remove();
                         } else {
-                            this.setABListener(item, targetSelector, eventArray, item.dataset.testCaseId);
+                            if (!containerInfoObj.containerDescription && item.dataset.containerDescription) {
+                                containerInfoObj.containerDescription = item.dataset.containerDescription;
+                            }
+                            this.setABListener(item, selector, eventArray, item.dataset.testCaseId, targetSelector);
                         }
                     } else {
                         throw new Error(`Initialization error for ${selector}`);
@@ -87,14 +88,15 @@ class ABHaze {
         }
         return null;
     }
-    setABListener(item, selector, eventArray, testCaseId) {
+    setABListener(item, selector, eventArray, testCaseId, targetSelector) {
         const viewEventType = 'view';
         let viewEventListener = () => {
             if (this.elementInViewport(item)) {
                 window.abDataLayer.eventsHistory.push({
                     eventType: viewEventType,
                     selector,
-                    testCaseId
+                    testCaseId,
+                    targetSelector
                 });
                 window.removeEventListener('load', viewEventListener);
                 window.removeEventListener('scroll', viewEventListener);
@@ -105,6 +107,7 @@ class ABHaze {
         window.addEventListener('scroll', viewEventListener);
         const eventAnalyticsObject = {
             selector,
+            targetSelector,
             testCaseId,
             view: false
         };
@@ -120,7 +123,8 @@ class ABHaze {
                 window.abDataLayer.eventsHistory.push({
                     eventType,
                     selector,
-                    testCaseId
+                    testCaseId,
+                    targetSelector
                 });
                 this.updateEventAnalytics(selector, eventType);
             };

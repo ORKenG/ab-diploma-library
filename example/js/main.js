@@ -8,7 +8,7 @@
 
 'use strict';
 
-var abHaze = new abHaze('ZMiht4Jdcgs4dose', 'TnglECYONe74qIGIjd25o4BYe036ISFf', 'DEVELOPMENT', null);
+var abHaze = new abHaze('bSiok3FKHXFN5cBo64029082', 'IlTpQkmytwb348SzmvZy4fEv2VIymDfx64029082', 'PRODUCTION', null);
 abHaze.setAB('.ab-slider-image-1', '.ab-test-target', true);
 abHaze.setAB('.ab-slider-image-2', '.ab-test-target', true);
 
