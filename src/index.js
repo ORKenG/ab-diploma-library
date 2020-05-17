@@ -24,11 +24,8 @@ class ABHaze {
                 window.abDataLayer.userDevice = this.deviceDetection();
                 window.abDataLayer.userClient = navigator.userAgent;
                 window.abDataLayer.siteSecret = siteSecret;
-                var xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = () => console.dir('Collected AB Data');
-                xmlhttp.open('POST', REQUEST_URL, true);
-                xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-                xmlhttp.send(JSON.stringify(window.abDataLayer));
+                const blob = new Blob([JSON.stringify(window.abDataLayer)], {type: 'application/json'});
+                navigator.sendBeacon(REQUEST_URL, blob);
             }
         };
     }
